@@ -13,3 +13,7 @@ adminer:
 migrate:
 	migrate -source file://migrations \
 	 		-database postgres://postgres:secret@localhost/postgres?sslmode=disable up
+			
+migrate-down:
+	migrate -source file://migrations \
+	 		-database postgres://postgres:secret@localhost/postgres?sslmode=disable down

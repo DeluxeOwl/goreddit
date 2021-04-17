@@ -12,12 +12,6 @@ import (
 // Generate interface stubs
 // s *PostStore goreddit.PostStore
 
-func NewPostStore(db *sqlx.DB) *PostStore {
-	return &PostStore{
-		DB: db,
-	}
-}
-
 type PostStore struct {
 	*sqlx.DB
 }

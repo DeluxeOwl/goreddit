@@ -12,12 +12,6 @@ import (
 // Generate interface stubs
 // s *ThreadStore goreddit.ThreadStore
 
-func NewThreadStore(db *sqlx.DB) *ThreadStore {
-	return &ThreadStore{
-		DB: db,
-	}
-}
-
 // Borrows all the functionalities and methods
 // of the sqlx.DB type
 type ThreadStore struct {
