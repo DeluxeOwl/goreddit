@@ -4,12 +4,14 @@ import (
 	"html/template"
 	"net/http"
 
+	"github.com/gorilla/csrf"
+
 	"github.com/DeluxeOwl/goreddit"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
 
-func NewHandler(store goreddit.Store) *Handler {
+func NewHandler(store goreddit.Store, csrfKey []byte) *Handler {
 	h := &Handler{
 		Mux:   chi.NewMux(),
 		store: store,
@@ -20,6 +22,7 @@ func NewHandler(store goreddit.Store) *Handler {
 	comments := CommentHandler{store: store}
 
 	h.Use(middleware.Logger)
+	h.Use(csrf.Protect(csrfKey, csrf.Secure(false)))
 
 	h.Get("/", h.Home())
 
