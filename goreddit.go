@@ -43,3 +43,9 @@ type CommentStore interface {
 	UpdateComment(t *Comment) error
 	DeleteComment(id uuid.UUID) error
 }
+
+type Store interface {
+	ThreadStore
+	PostStore
+	CommentStore
+}
