@@ -1,38 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
+
 <body>
-    {{block "header" .}}
-    {{end}}
-    <h1>{{.Title}}</h1>
-    {{template "paragraph" .Text}}
-    {{template "paragraph" .Text}}
-    {{template "paragraph" .Text}}
-    <p>
-        {{.Text}}
-    </p>
-    <ul>
-        {{range .Lines}}
-            <li>{{.}}</li>
-        {{end}}
-    </ul>
-    {{if eq .Number1 .Number2}}
-        Numbers are equal
-    {{else}}
-        Numbers are not equal
-    {{end}}
-    <br>
-
-    {{block "content" .}}
-    This is the default content
-    {{end}}
-
-    {{block "footer" .}}
-    {{end}}
+    <nav class="navbar navbar-light container">
+        <a class="navbar-brand text-primary" href="#">goreddit</a>
+    </nav>
+    <div class="header bg-light border-bottom border-top py-5">
+        <div class="container">
+            {{block "header" .}}
+            {{end}}
+        </div>
+    </div>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-xl-8 order-1 order-xl-0">
+                {{block "content" .}}
+                {{end}}
+            </div>
+            <div class="col-xl-4 order-0 order-xl-1">
+                {{block "sidebar" .}}
+                {{end}}
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
