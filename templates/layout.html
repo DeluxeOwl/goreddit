@@ -7,7 +7,12 @@
     <title>Document</title>
 </head>
 <body>
+    {{block "header" .}}
+    {{end}}
     <h1>{{.Title}}</h1>
+    {{template "paragraph" .Text}}
+    {{template "paragraph" .Text}}
+    {{template "paragraph" .Text}}
     <p>
         {{.Text}}
     </p>
@@ -20,6 +25,14 @@
         Numbers are equal
     {{else}}
         Numbers are not equal
+    {{end}}
+    <br>
+
+    {{block "content" .}}
+    This is the default content
+    {{end}}
+
+    {{block "footer" .}}
     {{end}}
 </body>
 </html>
