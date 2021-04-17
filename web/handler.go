@@ -28,6 +28,7 @@ func NewHandler(store goreddit.Store) *Handler {
 		r.Post("/{id}/delete", h.ThreadsDelete())
 		r.Get("/{id}/new", h.PostsCreate())
 		r.Get("/{threadID}/{postID}", h.PostsShow())
+		r.Get("/{threadID}/{postID}/vote", h.PostsVote())
 		r.Post("/{id}", h.PostsStore())
 		r.Post("/{threadID}/{postID}", h.CommentsStore())
 	})
@@ -42,9 +43,20 @@ type Handler struct {
 }
 
 func (h *Handler) Home() http.HandlerFunc {
+
+	type data struct {
+		Posts []goreddit.Post
+	}
+
 	tmpl := template.Must(template.ParseFiles("templates/layout.html", "templates/home.html"))
+
 	return func(w http.ResponseWriter, r *http.Request) {
-		tmpl.Execute(w, nil)
+		pp, err := h.store.Posts()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		tmpl.Execute(w, data{Posts: pp})
 	}
 }
 
@@ -202,6 +214,40 @@ func (h *Handler) PostsShow() http.HandlerFunc {
 		}
 
 		tmpl.Execute(w, data{Thread: t, Post: p, Comments: cc})
+	}
+}
+func (h *Handler) PostsVote() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		idStr := chi.URLParam(r, "postID")
+
+		id, err := uuid.Parse(idStr)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		p, err := h.store.Post(id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+
+		dir := r.URL.Query().Get("dir")
+		if dir == "up" {
+			p.Votes++
+		} else if dir == "down" {
+			p.Votes--
+		} else {
+			http.Error(w, "Please don't test this parameter :)", http.StatusInternalServerError)
+			return
+		}
+
+		if err := h.store.UpdatePost(&p); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		http.Redirect(w, r, r.Referer(), http.StatusFound)
 	}
 }
 func (h *Handler) PostsStore() http.HandlerFunc {
