@@ -5,13 +5,15 @@ import (
 	"net/http"
 
 	"github.com/DeluxeOwl/goreddit"
+	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 	"github.com/gorilla/csrf"
 )
 
 type ThreadHandler struct {
-	store goreddit.Store
+	store    goreddit.Store
+	sessions *scs.SessionManager
 }
 
 func (h *ThreadHandler) List() http.HandlerFunc {

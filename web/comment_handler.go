@@ -4,12 +4,14 @@ import (
 	"net/http"
 
 	"github.com/DeluxeOwl/goreddit"
+	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 )
 
 type CommentHandler struct {
-	store goreddit.Store
+	store    goreddit.Store
+	sessions *scs.SessionManager
 }
 
 func (h *CommentHandler) Store() http.HandlerFunc {
