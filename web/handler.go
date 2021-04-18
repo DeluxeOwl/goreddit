@@ -50,7 +50,7 @@ func NewHandler(store goreddit.Store, sessions *scs.SessionManager, csrfKey []by
 	h.Post("/register", users.RegisterSubmit())
 	h.Get("/login", users.Login())
 	h.Post("/login", users.LoginSubmit())
-	h.Get("/logot", users.Logout())
+	h.Get("/logout", users.Logout())
 
 	return h
 }
