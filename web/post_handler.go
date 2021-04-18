@@ -19,6 +19,7 @@ type PostHandler struct {
 func (h *PostHandler) Create() http.HandlerFunc {
 
 	type data struct {
+		SessionData
 		Thread goreddit.Thread
 		CSRF   template.HTML
 	}
@@ -38,12 +39,17 @@ func (h *PostHandler) Create() http.HandlerFunc {
 			return
 		}
 
-		tmpl.Execute(w, data{Thread: t, CSRF: csrf.TemplateField(r)})
+		tmpl.Execute(w, data{
+			SessionData: GetSessionData(h.sessions, r.Context()),
+			Thread:      t,
+			CSRF:        csrf.TemplateField(r),
+		})
 	}
 }
 func (h *PostHandler) Show() http.HandlerFunc {
 
 	type data struct {
+		SessionData
 		CSRF     template.HTML
 		Thread   goreddit.Thread
 		Post     goreddit.Post
@@ -85,7 +91,13 @@ func (h *PostHandler) Show() http.HandlerFunc {
 			return
 		}
 
-		tmpl.Execute(w, data{CSRF: csrf.TemplateField(r), Thread: t, Post: p, Comments: cc})
+		tmpl.Execute(w, data{
+			SessionData: GetSessionData(h.sessions, r.Context()),
+			CSRF:        csrf.TemplateField(r),
+			Thread:      t,
+			Post:        p,
+			Comments:    cc,
+		})
 	}
 }
 func (h *PostHandler) Vote() http.HandlerFunc {
@@ -151,6 +163,7 @@ func (h *PostHandler) Store() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		h.sessions.Put(r.Context(), "flash", "Your post has been created.")
 
 		http.Redirect(w, r, "/threads/"+t.ID.String()+"/"+p.ID.String(), http.StatusFound)
 	}

@@ -55,8 +55,11 @@ type Handler struct {
 func (h *Handler) Home() http.HandlerFunc {
 
 	type data struct {
+		SessionData
 		Posts []goreddit.Post
 	}
+
+	// var once sync.Once
 
 	tmpl := template.Must(template.ParseFiles("templates/layout.html", "templates/home.html"))
 
@@ -66,6 +69,15 @@ func (h *Handler) Home() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		tmpl.Execute(w, data{Posts: pp})
+
+		// Will execute a function only once
+		// once.Do(func() {
+		// 	h.sessions.Put(r.Context(), "flash", "hello")
+		// })
+
+		tmpl.Execute(w, data{
+			SessionData: GetSessionData(h.sessions, r.Context()),
+			Posts:       pp,
+		})
 	}
 }
