@@ -2,6 +2,12 @@ package goreddit
 
 import "github.com/google/uuid"
 
+type User struct {
+	ID       uuid.UUID `db:"id"`
+	Username string    `db:"username"`
+	Password string    `db:"password"`
+}
+
 type Thread struct {
 	ID          uuid.UUID `db:"id"`
 	Title       string    `db:"title"`
@@ -46,9 +52,17 @@ type CommentStore interface {
 	UpdateComment(t *Comment) error
 	DeleteComment(id uuid.UUID) error
 }
+type UserStore interface {
+	User(id uuid.UUID) (User, error)
+	UserByUsername(username string) (User, error)
+	CreateUser(t *User) error
+	UpdateUser(t *User) error
+	DeleteUser(id uuid.UUID) error
+}
 
 type Store interface {
 	ThreadStore
 	PostStore
 	CommentStore
+	UserStore
 }
